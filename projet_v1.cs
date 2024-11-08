@@ -64,29 +64,87 @@ class ProjetV1
         string Tel = Console.ReadLine();
 
         Clients UnClient = new Clients(Numero, Nom, Prenom, Tel);
+        //Vérifier que le fichier existe
+        if (!File.Exists("Clients.bin"))
+        {
+            Console.WriteLine("Aucun fichier de clients trouvé.");
+            return;
+        }
         // Enregistrer le client dans le fichier
         using (FileStream Client = new FileStream("Clients.bin", FileMode.Append, FileAccess.Write))
+        using (BinaryWriter Ajout = new BinaryWriter(Client))
         {
-            using (BinaryWriter Ajout = new BinaryWriter(Client))
-            {
-                Ajout.Write(UnClient.NumClients);
-                Ajout.Write(UnClient.NomClient);
-                Ajout.Write(UnClient.PrenomClient);
-                Ajout.Write(UnClient.TelClient);
-            }
+            Ajout.Write(UnClient.NumClients);
+            Ajout.Write(UnClient.NomClient);
+            Ajout.Write(UnClient.PrenomClient);
+            Ajout.Write(UnClient.TelClient);
         }
+        
 
-        Console.WriteLine("Le client" + Numero + " a bien été ajouté.");
+        Console.WriteLine("Le client" + Nom + " " + Prenom + " a bien été ajouté.");
     }
 
     static void AfficherClient()
     {
+        if (!File.Exists("Clients.bin"))
+        {
+            Console.WriteLine("Le fichier n'existe pas.");
+            return;
+        }
 
+        using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
+        using (BinaryReader Lecture = new BinaryReader(MonFichier))
+        {
+            Console.WriteLine("Liste des clients :");
+            Console.WriteLine("-------------------");
+
+            while (MonFichier.Position < MonFichier.Length)
+            {
+                try
+                {
+                    // Lire les champs d'un client et créer une instance de la structure Clients
+                    Clients unClient = new Clients
+                    (
+                        Lecture.ReadInt32(),       // Numéro du client
+                        Lecture.ReadString(),      // Nom du client
+                        Lecture.ReadString(),      // Prénom du client
+                        Lecture.ReadString()       // Téléphone du client
+                    );
+
+                    // Vérifiez si la fiche est marquée comme supprimée
+                    if (unClient.NomClient.StartsWith("*"))
+                    {
+                        continue; // Ignorer les clients supprimés logiquement
+                    }
+
+                    Console.WriteLine("Numéro : " + unClient.NumClients);
+                    Console.WriteLine("Nom : " + unClient.NomClient);
+                    Console.WriteLine("Prénom : " + unClient.PrenomClient);
+                    Console.WriteLine("Téléphone : " + unClient.TelClient);
+                    Console.WriteLine("-------------------");
+                }
+                catch (EndOfStreamException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Erreur lors de la lecture d'un client : " + ex.Message);
+                    break;
+                }
+        }
+        
     }
+
+    Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+    Console.ReadKey(); // Pause avant de retourner au menu
+}
+
+
     //Menu utilisateur
     static bool Menu()
     {
-        Console.Clear();
+        //Console.Clear();
         Console.WriteLine("1. Ajouter un nouveau client");
         Console.WriteLine("2. Afficher un client");
         Console.WriteLine("3. Afficher tous les clients");
@@ -106,7 +164,7 @@ class ProjetV1
                 AjouterClient();
                 return true; // Continue le menu
             case "2":
-                Console.WriteLine("Vous avez choisi l'option 2.");
+                AfficherClient();
                 return true; // Continue le menu
             case "3":
                 Console.WriteLine("Vous avez choisi l'option 2.");
