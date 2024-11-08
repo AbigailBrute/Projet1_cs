@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
@@ -58,16 +59,16 @@ class ProjetV1
         string Prenom = Console.ReadLine();
         FirstMajuscule(ref Prenom); // S'assurer que le prénom commence par une majuscule
 
-        // Enregistrer le nom dans un fichier binaire
-        using (FileStream fs = new FileStream("Clients.bin", FileMode.Append))
+        // Enregistrer le client dans le fichier
+        using (FileStream Client = new FileStream("Clients.bin", FileMode.Append, FileAccess.Write))
         {
-            using (BinaryWriter writer = new BinaryWriter(fs))
+            using (BinaryWriter Ajout = new BinaryWriter(Client))
             {
-                writer.Write(nom);
+                Ajout.Write(Nom + " " + Prenom);
             }
         }
 
-        Console.WriteLine($"Client ajouté : {nom}");
+        Console.WriteLine("Le client" + Nom + " " + Prenom + " a bien été ajouté.");
     }
     //Menu utilisateur
     static bool Menu()
@@ -89,7 +90,7 @@ class ProjetV1
         switch (Choix)
         {
             case "1":
-                Console.WriteLine("Vous avez choisi l'option 1.");
+                AjouterClient();
                 return true; // Continue le menu
             case "2":
                 Console.WriteLine("Vous avez choisi l'option 2.");
@@ -127,5 +128,11 @@ class ProjetV1
 
     static void Main()
     {
+        bool Continuer = true;
+
+        while (Continuer)
+        {
+            Continuer = Menu();
+        }
     }
 }
