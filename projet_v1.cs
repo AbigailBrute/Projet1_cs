@@ -1,8 +1,5 @@
 using System;
 using System.IO;
-using System.Collections.ObjectModel;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 //Structure contenant les informations des clients, permettant d'en créer ou en modifier ou les utiliser.
 public struct Clients
     {
@@ -10,6 +7,7 @@ public struct Clients
         public string NomClient;
         public string PrenomClient;
         public string TelClient;
+        
 
         // Constructeur pour initialiser les information d'un client
         public Clients(int Num, string Nom, string Prenom, string Tel)
@@ -51,24 +49,39 @@ class ProjetV1
     //Procédure option 1 : Ajouter un nouveau client
     static void AjouterClient()
     {
+        Console.Write("Entrez le numéro du client : ");
+        int Numero = int.Parse(Console.ReadLine());
+
         Console.Write("Entrez le nom du client : ");
         string Nom = Console.ReadLine();
         Majuscule(ref Nom); // S'assurer que le nom est en majuscule
 
-        Console.Write("Entrez le nom du client : ");
+        Console.Write("Entrez le prénom du client : ");
         string Prenom = Console.ReadLine();
         FirstMajuscule(ref Prenom); // S'assurer que le prénom commence par une majuscule
 
+        Console.Write("Entrez le téléphone du client : ");
+        string Tel = Console.ReadLine();
+
+        Clients UnClient = new Clients(Numero, Nom, Prenom, Tel);
         // Enregistrer le client dans le fichier
         using (FileStream Client = new FileStream("Clients.bin", FileMode.Append, FileAccess.Write))
         {
             using (BinaryWriter Ajout = new BinaryWriter(Client))
             {
-                Ajout.Write(Nom + " " + Prenom);
+                Ajout.Write(UnClient.NumClients);
+                Ajout.Write(UnClient.NomClient);
+                Ajout.Write(UnClient.PrenomClient);
+                Ajout.Write(UnClient.TelClient);
             }
         }
 
-        Console.WriteLine("Le client" + Nom + " " + Prenom + " a bien été ajouté.");
+        Console.WriteLine("Le client" + Numero + " a bien été ajouté.");
+    }
+
+    static void AfficherClient()
+    {
+
     }
     //Menu utilisateur
     static bool Menu()
