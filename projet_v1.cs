@@ -64,12 +64,6 @@ class ProjetV1
         string Tel = Console.ReadLine();
 
         Clients UnClient = new Clients(Numero, Nom, Prenom, Tel);
-        //Vérifier que le fichier existe
-        if (!File.Exists("Clients.bin"))
-        {
-            Console.WriteLine("Aucun fichier de clients trouvé.");
-            return;
-        }
         // Enregistrer le client dans le fichier
         using (FileStream Client = new FileStream("Clients.bin", FileMode.Append, FileAccess.Write))
         using (BinaryWriter Ajout = new BinaryWriter(Client))
