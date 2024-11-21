@@ -203,6 +203,66 @@ class ProjetV1
         Console.ReadKey(); // Pause avant de retourner au menu
     }
 
+    //Option 4 : Affichage du nombre de clients dans le fichier
+    static void NombreClients()
+    {
+        if (!File.Exists("Clients.bin"))
+        {
+            Console.WriteLine("Le fichier n'existe pas.");
+            return;
+        }
+
+        int TotalFiches = 0; // Compteur pour toutes les fiches
+        int FichesSup = 0; // Compteur pour les fiches supprimées logiquement
+        int Fiches = 0; // Compteur pour les fiches non supprimées
+
+        using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
+        using (BinaryReader Lecture = new BinaryReader(MonFichier))
+        {
+            while (MonFichier.Position < MonFichier.Length)
+            {
+                try
+                {
+                    // Lire les données d'un client
+                    Clients unClient = new Clients
+                    (
+                        Lecture.ReadInt32(),
+                        Lecture.ReadString(),
+                        Lecture.ReadString(),
+                        Lecture.ReadString()
+                    );
+
+                    // Incrémenter le total des fiches
+                    TotalFiches++;
+
+                    // Vérifier si la fiche est supprimée logiquement
+                    if (unClient.NomClient.StartsWith("*"))
+                    {
+                        FichesSup++;
+                    }
+                    else
+                    {
+                        Fiches++;
+                    }
+                }
+                catch
+                {
+                    break;
+                }
+            }
+        }
+
+        // Afficher le nombre de fiche et autres statistiques
+        Console.WriteLine("Statistiques du fichier :");
+        Console.WriteLine("Nombre total de fiches         : " + TotalFiches);
+        Console.WriteLine("Nombre de fiches supprimées    : " + FichesSup);
+        Console.WriteLine("Nombre de fiches existantes    : " + Fiches);
+
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey(); // Pause avant de retourner au menu
+    }
+
+
 
     //Menu utilisateur
     static bool Menu()
