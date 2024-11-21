@@ -75,11 +75,80 @@ class ProjetV1
         }
         
 
-        Console.WriteLine("Le client" + Nom + " " + Prenom + " a bien été ajouté.");
+        Console.WriteLine("Le client " + Nom + " " + Prenom + " a bien été ajouté.");
     }
-
+    //Option 2 : Trouver un client avec son nom
     static void AfficherClient()
     {
+        // Demander le nom du client
+        Console.Write("Entrez le nom du client à rechercher : ");
+        string RechClient = Console.ReadLine().ToUpper(); // Convertir en majuscule pour une comparaison sans casse
+
+        if (!File.Exists("Clients.bin"))
+        {
+            Console.WriteLine("Le fichier n'existe pas.");
+            return;
+        }
+
+        bool ClientTrouve = false; // Indicateur pour savoir si un client a été trouvé
+        int NumFiche = 1; // Compteur de fiches (position dans le fichier)
+
+        using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
+        using (BinaryReader Lecture = new BinaryReader(MonFichier))
+        {
+            Console.WriteLine("Résultats de la recherche :");
+            Console.WriteLine("-------------------");
+
+            while (MonFichier.Position < MonFichier.Length)
+            {
+                try
+                {
+                    // Lire les données d'un client
+                    Clients unClient = new Clients
+                    (
+                        Lecture.ReadInt32(),       // Numéro du client
+                        Lecture.ReadString(),      // Nom
+                        Lecture.ReadString(),      // Prénom
+                        Lecture.ReadString()       // Téléphone
+                    );
+
+                    // Vérifier si le nom correspond
+                    if (unClient.NomClient.ToUpper() == RechClient)
+                    {
+                        // Afficher les informations du client
+                        Console.WriteLine($"Fiche numéro : {NumFiche}");
+                        Console.WriteLine($"Numéro : {unClient.NumClients}");
+                        Console.WriteLine($"Nom : {unClient.NomClient}");
+                        Console.WriteLine($"Prénom : {unClient.PrenomClient}");
+                        Console.WriteLine($"Téléphone : {unClient.TelClient}");
+                        Console.WriteLine("-------------------");
+                        ClientTrouve = true;
+                    }
+
+                    NumFiche++; // Incrémenter le numéro de fiche pour chaque client
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Erreur lors de la lecture d'un client : " + ex.Message);
+                    break;
+                }
+            }
+        }
+
+        // Si aucun client n'a été trouvé
+        if (!ClientTrouve)
+        {
+            Console.WriteLine("Aucun client trouvé pour le nom spécifié.");
+        }
+
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey(); // Pause avant de retourner au menu
+    }
+
+    //Option 3 : Afficher tous les clients
+    static void AfficherTousClients()
+    {
+        //Voir comment afficher le numéro de la fiche
         if (!File.Exists("Clients.bin"))
         {
             Console.WriteLine("Le fichier n'existe pas.");
@@ -126,13 +195,13 @@ class ProjetV1
                     Console.WriteLine("Erreur lors de la lecture d'un client : " + ex.Message);
                     break;
                 }
-        }
+            }
         
-    }
+        }
 
-    Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-    Console.ReadKey(); // Pause avant de retourner au menu
-}
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey(); // Pause avant de retourner au menu
+    }
 
 
     //Menu utilisateur
@@ -161,7 +230,7 @@ class ProjetV1
                 AfficherClient();
                 return true; // Continue le menu
             case "3":
-                Console.WriteLine("Vous avez choisi l'option 2.");
+                AfficherTousClients();
                 return true; // Continue le menu
             case "4":
                 Console.WriteLine("Vous avez choisi l'option 2.");
