@@ -252,6 +252,8 @@ class ProjetV1
             }
         }
 
+        
+
         // Afficher le nombre de fiche et autres statistiques
         Console.WriteLine("Statistiques du fichier :");
         Console.WriteLine("Nombre total de fiches         : " + TotalFiches);
