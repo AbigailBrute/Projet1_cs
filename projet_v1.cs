@@ -3,7 +3,7 @@ using System.IO;
 //Structure contenant les informations des clients, permettant d'en créer ou en modifier ou les utiliser.
 public struct Clients
     {
-        public int NumClients;
+        public int NumClient;
         public string NomClient;
         public string PrenomClient;
         public string TelClient;
@@ -12,7 +12,7 @@ public struct Clients
         // Constructeur pour initialiser les information d'un client
         public Clients(int Num, string Nom, string Prenom, string Tel)
         {
-            NumClients = Num;
+            NumClient = Num;
             NomClient = Nom;
             PrenomClient = Prenom;
             TelClient = Tel;
@@ -68,7 +68,7 @@ class ProjetV1
         using (FileStream Client = new FileStream("Clients.bin", FileMode.Append, FileAccess.Write))
         using (BinaryWriter Ajout = new BinaryWriter(Client))
         {
-            Ajout.Write(UnClient.NumClients);
+            Ajout.Write(UnClient.NumClient);
             Ajout.Write(UnClient.NomClient);
             Ajout.Write(UnClient.PrenomClient);
             Ajout.Write(UnClient.TelClient);
@@ -82,7 +82,7 @@ class ProjetV1
     {
         // Demander le nom du client
         Console.Write("Entrez le nom du client à rechercher : ");
-        string RechClient = Console.ReadLine().ToUpper(); // Convertir en majuscule pour une comparaison sans casse
+        string RechClient = Console.ReadLine().ToUpper(); // Convertir en majuscule pour éviter les erreurs de comparaison
 
         if (!File.Exists("Clients.bin"))
         {
@@ -91,7 +91,9 @@ class ProjetV1
         }
 
         bool ClientTrouve = false; // Indicateur pour savoir si un client a été trouvé
-        int NumFiche = 1; // Compteur de fiches (position dans le fichier)
+        int NumFiche = 1; // Compteur pour la position dans le fichier
+        int Numero;
+        string Nom, Prenom, Telephone;
 
         using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
         using (BinaryReader Lecture = new BinaryReader(MonFichier))
@@ -104,23 +106,23 @@ class ProjetV1
                 try
                 {
                     // Lire les données d'un client
-                    Clients unClient = new Clients
+                    Clients UnClient = new Clients
                     (
-                        Lecture.ReadInt32(),       // Numéro du client
-                        Lecture.ReadString(),      // Nom
-                        Lecture.ReadString(),      // Prénom
-                        Lecture.ReadString()       // Téléphone
+                        Numero = Lecture.ReadInt32(),
+                        Nom = Lecture.ReadString(),
+                        Prenom = Lecture.ReadString(),
+                        Telephone = Lecture.ReadString()
                     );
 
                     // Vérifier si le nom correspond
-                    if (unClient.NomClient.ToUpper() == RechClient)
+                    if (UnClient.NomClient.ToUpper() == RechClient)
                     {
                         // Afficher les informations du client
-                        Console.WriteLine($"Fiche numéro : {NumFiche}");
-                        Console.WriteLine($"Numéro : {unClient.NumClients}");
-                        Console.WriteLine($"Nom : {unClient.NomClient}");
-                        Console.WriteLine($"Prénom : {unClient.PrenomClient}");
-                        Console.WriteLine($"Téléphone : {unClient.TelClient}");
+                        Console.WriteLine("Fiche numéro : " + NumFiche);
+                        Console.WriteLine("Numéro : " + UnClient.NumClient);
+                        Console.WriteLine("Nom : " + UnClient.NomClient);
+                        Console.WriteLine("Prénom : " + UnClient.PrenomClient);
+                        Console.WriteLine("Téléphone : " + UnClient.TelClient);
                         Console.WriteLine("-------------------");
                         ClientTrouve = true;
                     }
@@ -155,6 +157,10 @@ class ProjetV1
             return;
         }
 
+        int NumFiche = 1; // Compteur pour la position dans le fichier
+        int Numero;
+        string Nom, Prenom, Telephone;
+
         using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
         using (BinaryReader Lecture = new BinaryReader(MonFichier))
         {
@@ -166,25 +172,27 @@ class ProjetV1
                 try
                 {
                     // Lire les champs d'un client et créer une instance de la structure Clients
-                    Clients unClient = new Clients
+                    Clients UnClient = new Clients
                     (
-                        Lecture.ReadInt32(),       // Numéro du client
-                        Lecture.ReadString(),      // Nom du client
-                        Lecture.ReadString(),      // Prénom du client
-                        Lecture.ReadString()       // Téléphone du client
+                        Numero = Lecture.ReadInt32(),
+                        Nom = Lecture.ReadString(),
+                        Prenom = Lecture.ReadString(),
+                        Telephone = Lecture.ReadString()
                     );
 
                     // Vérifiez si la fiche est marquée comme supprimée
-                    if (unClient.NomClient.StartsWith("*"))
+                    if (UnClient.NomClient.StartsWith("*"))
                     {
-                        continue; // Ignorer les clients supprimés logiquement
+                        continue; // Ignore les clients supprimés logiquement
                     }
-
-                    Console.WriteLine("Numéro : " + unClient.NumClients);
-                    Console.WriteLine("Nom : " + unClient.NomClient);
-                    Console.WriteLine("Prénom : " + unClient.PrenomClient);
-                    Console.WriteLine("Téléphone : " + unClient.TelClient);
+                    Console.WriteLine("Fiche numéro : " + NumFiche);
+                    Console.WriteLine("Numéro : " + UnClient.NumClient);
+                    Console.WriteLine("Nom : " + UnClient.NomClient);
+                    Console.WriteLine("Prénom : " + UnClient.PrenomClient);
+                    Console.WriteLine("Téléphone : " + UnClient.TelClient);
                     Console.WriteLine("-------------------");
+
+                    NumFiche++; //Incrémentation de la position de la fiche
                 }
                 catch (EndOfStreamException)
                 {
@@ -215,6 +223,8 @@ class ProjetV1
         int TotalFiches = 0; // Compteur pour toutes les fiches
         int FichesSup = 0; // Compteur pour les fiches supprimées logiquement
         int Fiches = 0; // Compteur pour les fiches non supprimées
+        int Numero;
+        string Nom, Prenom, Telephone;
 
         using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
         using (BinaryReader Lecture = new BinaryReader(MonFichier))
@@ -226,10 +236,10 @@ class ProjetV1
                     // Lire les données d'un client
                     Clients unClient = new Clients
                     (
-                        Lecture.ReadInt32(),
-                        Lecture.ReadString(),
-                        Lecture.ReadString(),
-                        Lecture.ReadString()
+                        Numero = Lecture.ReadInt32(),
+                        Nom = Lecture.ReadString(),
+                        Prenom = Lecture.ReadString(),
+                        Telephone = Lecture.ReadString()
                     );
 
                     // Incrémenter le total des fiches
@@ -238,11 +248,11 @@ class ProjetV1
                     // Vérifier si la fiche est supprimée logiquement
                     if (unClient.NomClient.StartsWith("*"))
                     {
-                        FichesSup++;
+                        FichesSup++; //incrémenter les fiches supprimées
                     }
                     else
                     {
-                        Fiches++;
+                        Fiches++; //incrémenter les fiches non supprimées
                     }
                 }
                 catch
@@ -255,10 +265,11 @@ class ProjetV1
         
 
         // Afficher le nombre de fiche et autres statistiques
-        Console.WriteLine("Statistiques du fichier :");
+        Console.WriteLine("Statistiques du fichier : ");
+        Console.WriteLine("Nombre de fiches existantes    : " + Fiches);
         Console.WriteLine("Nombre total de fiches         : " + TotalFiches);
         Console.WriteLine("Nombre de fiches supprimées    : " + FichesSup);
-        Console.WriteLine("Nombre de fiches existantes    : " + Fiches);
+        
 
         Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
         Console.ReadKey(); // Pause avant de retourner au menu
@@ -295,7 +306,7 @@ class ProjetV1
                 AfficherTousClients();
                 return true; // Continue le menu
             case "4":
-                Console.WriteLine("Vous avez choisi l'option 2.");
+                NombreClients();
                 return true; // Continue le menu
             case "5":
                 Console.WriteLine("Vous avez choisi l'option 2.");
