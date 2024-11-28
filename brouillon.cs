@@ -44,7 +44,7 @@ static void ModifierClient()
 
                     // Afficher les informations actuelles
                     Console.WriteLine("Fiche trouvée. Données actuelles :");
-                    Console.WriteLine($"Numéro : {unClient.NumClients}");
+                    Console.WriteLine($"Numéro : {unClient.NumClient}");
                     Console.WriteLine($"Nom : {unClient.NomClient}");
                     Console.WriteLine($"Prénom : {unClient.PrenomClient}");
                     Console.WriteLine($"Téléphone : {unClient.TelClient}");
@@ -55,7 +55,7 @@ static void ModifierClient()
                     string nouveauNumero = Console.ReadLine();
                     if (!string.IsNullOrWhiteSpace(nouveauNumero))
                     {
-                        unClient.NumClients = int.Parse(nouveauNumero);
+                        unClient.NumClient = int.Parse(nouveauNumero);
                     }
 
                     Console.Write("Entrez le nouveau nom (ou appuyez sur Entrée pour conserver) : ");
@@ -115,7 +115,7 @@ static void ModifierClient()
     {
         foreach (Clients client in clients)
         {
-            Ecriture.Write(client.NumClients);
+            Ecriture.Write(client.NumClient);
             Ecriture.Write(client.NomClient);
             Ecriture.Write(client.PrenomClient);
             Ecriture.Write(client.TelClient);
@@ -168,7 +168,7 @@ static void SupprimerFiche()
 
                     // Afficher les informations actuelles
                     Console.WriteLine("Fiche trouvée. Données actuelles :");
-                    Console.WriteLine($"Numéro : {unClient.NumClients}");
+                    Console.WriteLine($"Numéro : {unClient.NumClient}");
                     Console.WriteLine($"Nom : {unClient.NomClient}");
                     Console.WriteLine($"Prénom : {unClient.PrenomClient}");
                     Console.WriteLine($"Téléphone : {unClient.TelClient}");
@@ -212,7 +212,7 @@ static void SupprimerFiche()
     {
         foreach (Clients client in clients)
         {
-            Ecriture.Write(client.NumClients);
+            Ecriture.Write(client.NumClient);
             Ecriture.Write(client.NomClient);
             Ecriture.Write(client.PrenomClient);
             Ecriture.Write(client.TelClient);
@@ -266,7 +266,7 @@ static void RecupererFiche()
 
                     // Afficher les informations actuelles
                     Console.WriteLine("Fiche trouvée. Données actuelles :");
-                    Console.WriteLine($"Numéro : {unClient.NumClients}");
+                    Console.WriteLine($"Numéro : {unClient.NumClient}");
                     Console.WriteLine($"Nom : {unClient.NomClient}");
                     Console.WriteLine($"Prénom : {unClient.PrenomClient}");
                     Console.WriteLine($"Téléphone : {unClient.TelClient}");
@@ -308,7 +308,7 @@ static void RecupererFiche()
     {
         foreach (Clients client in clients)
         {
-            Ecriture.Write(client.NumClients);
+            Ecriture.Write(client.NumClient);
             Ecriture.Write(client.NomClient);
             Ecriture.Write(client.PrenomClient);
             Ecriture.Write(client.TelClient);
@@ -353,7 +353,7 @@ static void CompresserFichier()
                     if (!unClient.NomClient.StartsWith("*"))
                     {
                         // Écrire la fiche non supprimée dans le fichier temporaire
-                        ecritureTemporaire.Write(unClient.NumClients);
+                        ecritureTemporaire.Write(unClient.NumClient);
                         ecritureTemporaire.Write(unClient.NomClient);
                         ecritureTemporaire.Write(unClient.PrenomClient);
                         ecritureTemporaire.Write(unClient.TelClient);
