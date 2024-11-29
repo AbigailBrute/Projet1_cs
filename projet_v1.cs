@@ -91,7 +91,10 @@ class ProjetV1
         }
 
         bool ClientTrouve = false; // Indicateur pour savoir si un client a été trouvé
-        int NumFiche = 1; // Compteur pour la position dans le fichier
+        //Variables pour obtenir la numéro de la fiche client
+        int NumFiche, NbElements;
+        long Position;
+        //Variables pour lire les données du fichier
         int Numero;
         string Nom, Prenom, Telephone;
 
@@ -117,6 +120,10 @@ class ProjetV1
                     // Vérifier si le nom correspond
                     if (UnClient.NomClient.ToUpper() == RechClient)
                     {
+                        //Calcul position fiche
+                        Position = MonFichier.Position;
+                        NbElements = sizeof(int) + Nom.Length + Prenom.Length + Telephone.Length;
+                        NumFiche = (int)(Position / NbElements);
                         // Afficher les informations du client
                         Console.WriteLine("Fiche numéro : " + NumFiche);
                         Console.WriteLine("Numéro : " + UnClient.NumClient);
@@ -126,8 +133,6 @@ class ProjetV1
                         Console.WriteLine("-------------------");
                         ClientTrouve = true;
                     }
-
-                    NumFiche++; // Incrémenter le numéro de fiche pour chaque client
                 }
                 catch (Exception ex)
                 {
@@ -150,14 +155,15 @@ class ProjetV1
     //Option 3 : Afficher tous les clients
     static void AfficherTousClients()
     {
-        //Voir comment afficher le numéro de la fiche
         if (!File.Exists("Clients.bin"))
         {
             Console.WriteLine("Le fichier n'existe pas.");
             return;
         }
-
-        int NumFiche = 1; // Compteur pour la position dans le fichier
+        //Variables pour obtenir la numéro de la fiche client
+        int NumFiche, NbElements;
+        long Position;
+        //Variables pour lire les données clients
         int Numero;
         string Nom, Prenom, Telephone;
 
@@ -180,6 +186,11 @@ class ProjetV1
                         Telephone = Lecture.ReadString()
                     );
 
+                    // Obtenir la position actuelle dans le fichier pour calculer le numéro de la fiche
+                    Position = MonFichier.Position;
+                    NbElements = sizeof(int) + Nom.Length + Prenom.Length + Telephone.Length;
+                    NumFiche = (int)(Position / NbElements);
+
                     // Vérifiez si la fiche est marquée comme supprimée
                     if (UnClient.NomClient.StartsWith("*"))
                     {
@@ -191,8 +202,6 @@ class ProjetV1
                     Console.WriteLine("Prénom : " + UnClient.PrenomClient);
                     Console.WriteLine("Téléphone : " + UnClient.TelClient);
                     Console.WriteLine("-------------------");
-
-                    NumFiche++; //Incrémentation de la position de la fiche
                 }
                 catch (EndOfStreamException)
                 {
@@ -204,12 +213,12 @@ class ProjetV1
                     break;
                 }
             }
-        
         }
 
         Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
         Console.ReadKey(); // Pause avant de retourner au menu
     }
+
 
     //Option 4 : Affichage du nombre de clients dans le fichier
     static void NombreClients()
