@@ -228,30 +228,46 @@ class ProjetV1
             Console.WriteLine("Le fichier n'existe pas.");
             return;
         }
+        
+        long Position;//Variable pour calculer la postion du fichier
+        int NbElements, NumFiche;
 
         int TotalFiches = 0; // Compteur pour toutes les fiches
         int FichesSup = 0; // Compteur pour les fiches supprimées logiquement
         int Fiches = 0; // Compteur pour les fiches non supprimées
 
+        //Variables pour lire les données clients
+        int Numero;
+        string Nom, Prenom, Telephone;
+
         using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
+        using (BinaryReader Lecture = new BinaryReader(MonFichier))
         {
             MonFichier.Seek(0, SeekOrigin.End);
-            long LaPos = MonFichier.Position;
-            int NbElements = (int)(LaPos / sizeof(int));
+            Position = MonFichier.Position;
+            TotalFiches = (int)(Position / sizeof(int));
+            MonFichier.Seek(0, SeekOrigin.Begin);
 
-            using (BinaryReader Lecture = new BinaryReader(MonFichier))
+            while (MonFichier.Position < MonFichier.Length)
             {
-                MonFichier.Seek(0, SeekOrigin.Begin);
-                for (int i = 0; i < NbElements; i++)
+                try
                 {
-                    int Numero = Lecture.ReadInt32();
-                    string Nom = Lecture.ReadString();
-                    string Prenom = Lecture.ReadString();
-                    string Telephone = Lecture.ReadString();
+                    // Lire les champs d'un client et créer une instance de la structure Clients
+                    Clients UnClient = new Clients
+                    (
+                        Numero = Lecture.ReadInt32(),
+                        Nom = Lecture.ReadString(),
+                        Prenom = Lecture.ReadString(),
+                        Telephone = Lecture.ReadString()
+                    );
 
-                    TotalFiches++;
+                    // Obtenir la position actuelle dans le fichier pour calculer le numéro de la fiche
+                    Position = MonFichier.Position;
+                    NbElements = sizeof(int) + Nom.Length + Prenom.Length + Telephone.Length;
+                    NumFiche = (int)(Position / NbElements);
 
-                    if (Nom.StartsWith("*"))
+                    // Vérifiez si la fiche est marquée comme supprimée
+                    if (UnClient.NomClient.StartsWith("*"))
                     {
                         FichesSup++;
                     }
@@ -260,8 +276,17 @@ class ProjetV1
                         Fiches++;
                     }
                 }
-            }
-        }        
+                catch (EndOfStreamException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Erreur lors de la lecture d'un client : " + ex.Message);
+                    break;
+                }
+            }   
+        }
 
         // Afficher le nombre de fiche et autres statistiques
         Console.WriteLine("Statistiques du fichier : ");
@@ -276,7 +301,7 @@ class ProjetV1
 
     //Option 5 : Modifier un client existant
     static void ModifierClient()
-{
+    {
     if (!File.Exists("Clients.bin"))
     {
         Console.WriteLine("Le fichier n'existe pas.");
