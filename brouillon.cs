@@ -1,3 +1,4 @@
+/*
 //option 5
 static void ModifierClient()
 {
@@ -376,3 +377,5 @@ static void CompresserFichier()
 
     Console.WriteLine("Le fichier a été compressé avec succès. Les fiches supprimées logiquement ont été supprimées.");
 }
+
+*/
