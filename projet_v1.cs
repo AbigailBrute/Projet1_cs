@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 //Structure contenant les informations des clients, permettant d'en créer ou en modifier ou les utiliser.
-public struct Clients
+    public struct Clients
     {
         public int NumClient;
         public string NomClient;
@@ -228,13 +228,8 @@ class ProjetV1
             Console.WriteLine("Le fichier n'existe pas.");
             return;
         }
-        
-        long Position;//Variable pour calculer la postion du fichier
-        int NbElements, NumFiche;
 
-        int TotalFiches = 0; // Compteur pour toutes les fiches
-        int FichesSup = 0; // Compteur pour les fiches supprimées logiquement
-        int Fiches = 0; // Compteur pour les fiches non supprimées
+        int Fiches = 0; // Compteur pour les fiches
 
         //Variables pour lire les données clients
         int Numero;
@@ -243,10 +238,6 @@ class ProjetV1
         using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
         using (BinaryReader Lecture = new BinaryReader(MonFichier))
         {
-            MonFichier.Seek(0, SeekOrigin.End);
-            Position = MonFichier.Position;
-            TotalFiches = (int)(Position / sizeof(int));
-            MonFichier.Seek(0, SeekOrigin.Begin);
 
             while (MonFichier.Position < MonFichier.Length)
             {
@@ -261,15 +252,10 @@ class ProjetV1
                         Telephone = Lecture.ReadString()
                     );
 
-                    // Obtenir la position actuelle dans le fichier pour calculer le numéro de la fiche
-                    Position = MonFichier.Position;
-                    NbElements = sizeof(int) + Nom.Length + Prenom.Length + Telephone.Length;
-                    NumFiche = (int)(Position / NbElements);
-
                     // Vérifiez si la fiche est marquée comme supprimée
                     if (UnClient.NomClient.StartsWith("*"))
                     {
-                        FichesSup++;
+                        continue;
                     }
                     else
                     {
@@ -289,10 +275,7 @@ class ProjetV1
         }
 
         // Afficher le nombre de fiche et autres statistiques
-        Console.WriteLine("Statistiques du fichier : ");
-        Console.WriteLine("Nombre de fiches existantes    : " + Fiches);
-        Console.WriteLine("Nombre total de fiches         : " + TotalFiches);
-        Console.WriteLine("Nombre de fiches supprimées    : " + FichesSup);
+        Console.WriteLine("Nombre de fiches existantes dans le fichier Clients : " + Fiches);
         
 
         Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
