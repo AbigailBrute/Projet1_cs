@@ -432,11 +432,12 @@ static void SupprimerClient()
     }
 
     bool ficheTrouvee = false;
-    long positionDebut = 0; // Position de début de la fiche trouvée
+    long positionDebut; // Position de début de la fiche trouvée
+
+    List<Clients> clients = new List<Clients>(); // Liste pour stocker les clients
 
     using (FileStream monFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.ReadWrite))
     using (BinaryReader lecture = new BinaryReader(monFichier))
-    using (BinaryWriter ecriture = new BinaryWriter(monFichier))
     {
         int compteurFiche = 1;
 
@@ -452,12 +453,9 @@ static void SupprimerClient()
                 string prenom = lecture.ReadString();
                 string telephone = lecture.ReadString();
 
-                // Vérifier si c'est la fiche souhaitée
                 if (compteurFiche == numFicheUtilisateur)
                 {
                     ficheTrouvee = true;
-
-                    // Afficher les données pour confirmation
                     Console.WriteLine("\nDonnées actuelles de la fiche :");
                     Console.WriteLine($"Fiche numéro : {compteurFiche}");
                     Console.WriteLine($"Numéro : {numero}");
@@ -474,17 +472,19 @@ static void SupprimerClient()
                         // Ajouter un * devant le nom pour marquer comme supprimé
                         string nouveauNom = "*" + nom;
 
-                        // Repositionner pour écrire
-                        monFichier.Seek(positionDebut + sizeof(int), SeekOrigin.Begin); // Sauter le numéro
-                        ecriture.Write(nouveauNom);
+                        // Ajouter à la liste des clients (sans modifier le fichier pour l'instant)
+                        clients.Add(new Clients(numero, nouveauNom, prenom, telephone));
                         Console.WriteLine("Le client a été supprimé logiquement avec succès.");
                     }
                     else
                     {
                         Console.WriteLine("Suppression annulée.");
+                        clients.Add(new Clients(numero, nom, prenom, telephone)); // Ajoute sans modifier
                     }
-
-                    break;
+                }
+                else
+                {
+                    clients.Add(new Clients(numero, nom, prenom, telephone)); // Ajoute les autres clients
                 }
 
                 compteurFiche++;
@@ -506,12 +506,131 @@ static void SupprimerClient()
         }
     }
 
+    // Réécriture complète du fichier avec la liste mise à jour
+    using (FileStream monFichier = new FileStream("Clients.bin", FileMode.Create, FileAccess.Write))
+    using (BinaryWriter ecriture = new BinaryWriter(monFichier))
+    {
+        foreach (var client in clients)
+        {
+            ecriture.Write(client.NumClient);
+            ecriture.Write(client.NomClient);
+            ecriture.Write(client.PrenomClient);
+            ecriture.Write(client.TelClient);
+        }
+    }
+
     Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
     Console.ReadKey(); // Pause avant de retourner au menu
 }
 
 
+static void RecupererFicheSupprimee()
+{
+    if (!File.Exists("Clients.bin"))
+    {
+        Console.WriteLine("Le fichier n'existe pas.");
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey();
+        return;
+    }
 
+    Console.Write("Entrez le nom du client à récupérer : ");
+    string nomRecherche = Console.ReadLine(); 
+    Majuscule(ref nomRecherche); // Convertir en majuscules pour éviter la casse
+
+    bool ficheTrouvee = false;
+    long positionDebut;
+
+    List<Clients> clients = new List<Clients>(); // Liste pour stocker tous les clients, y compris supprimés
+
+    using (FileStream monFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.ReadWrite))
+    using (BinaryReader lecture = new BinaryReader(monFichier))
+    using (BinaryWriter ecriture = new BinaryWriter(monFichier))
+    {
+        while (monFichier.Position < monFichier.Length)
+        {
+            try
+            {
+                // Sauvegarder la position actuelle pour modification si besoin
+                positionDebut = monFichier.Position;
+
+                // Lire les données de la fiche
+                int numero = lecture.ReadInt32();
+                string nom = lecture.ReadString();
+                string prenom = lecture.ReadString();
+                string telephone = lecture.ReadString();
+
+                // Vérifier si le nom correspond (avec un * devant)
+                if (nom.StartsWith("*") && nom.Substring(1) == nomRecherche)
+                {
+                    ficheTrouvee = true;
+
+                    // Afficher les données pour confirmation
+                    Console.WriteLine("Fiche trouvée :");
+                    Console.WriteLine($"Numéro : {numero}");
+                    Console.WriteLine($"Nom : {nom}");
+                    Console.WriteLine($"Prénom : {prenom}");
+                    Console.WriteLine($"Téléphone : {telephone}");
+                    Console.WriteLine("-------------------");
+
+                    Console.Write("Voulez-vous récupérer cette fiche ? (O/N) : ");
+                    string confirmation = Console.ReadLine().ToUpper();
+                    if (confirmation == "O")
+                    {
+                        // Repositionner pour modifier le fichier
+                        monFichier.Seek(positionDebut, SeekOrigin.Begin);
+
+                        // Réécrire les données en retirant le '*'
+                        ecriture.Write(numero);
+                        ecriture.Write(nomRecherche); // Nom sans le '*', déjà en majuscules
+                        ecriture.Write(prenom);
+                        ecriture.Write(telephone);
+
+                        Console.WriteLine("La fiche a été récupérée avec succès.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Récupération annulée.");
+                    }
+                    break; // Sortir de la boucle
+                }
+
+                // Ajouter toutes les autres fiches à la liste pour réécriture
+                clients.Add(new Clients(numero, nom, prenom, telephone));
+            }
+            catch (EndOfStreamException)
+            {
+                break; // Fin du fichier atteinte
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erreur lors de la lecture d'un client : " + ex.Message);
+                break;
+            }
+        }
+    }
+
+    if (!ficheTrouvee)
+    {
+        Console.WriteLine("Aucune fiche correspondant au nom spécifié n'a été trouvée.");
+    }
+
+    // Réécrire tout le fichier avec les clients mis à jour (incluant la récupération)
+    using (FileStream monFichier = new FileStream("Clients.bin", FileMode.Create, FileAccess.Write))
+    using (BinaryWriter ecriture = new BinaryWriter(monFichier))
+    {
+        foreach (var client in clients)
+        {
+            ecriture.Write(client.NumClient);
+            ecriture.Write(client.NomClient);
+            ecriture.Write(client.PrenomClient);
+            ecriture.Write(client.TelClient);
+        }
+    }
+
+    Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+    Console.ReadKey();
+}
     //Menu utilisateur
     static bool Menu()
     {
@@ -550,7 +669,7 @@ static void SupprimerClient()
                 SupprimerClient();
                 return true; // Continue le menu
             case "7":
-                Console.WriteLine("Vous avez choisi l'option 2.");
+                RecupererFicheSupprimee();
                 return true; // Continue le menu
             case "8":
                 Console.WriteLine("Vous avez choisi l'option 2.");
