@@ -412,6 +412,105 @@ static void ModifierClient()
     Console.ReadKey();
 }
 
+static void SupprimerClient()
+{
+    if (!File.Exists("Clients.bin"))
+    {
+        Console.WriteLine("Le fichier n'existe pas.");
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey(); // Pause avant de retourner au menu
+        return;
+    }
+
+    Console.Write("Entrez le numéro de la fiche à supprimer : ");
+    if (!int.TryParse(Console.ReadLine(), out int numFicheUtilisateur))
+    {
+        Console.WriteLine("La valeur saisie n'est pas un numéro valide.");
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey(); // Pause avant de retourner au menu
+        return;
+    }
+
+    bool ficheTrouvee = false;
+    long positionDebut = 0; // Position de début de la fiche trouvée
+
+    using (FileStream monFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.ReadWrite))
+    using (BinaryReader lecture = new BinaryReader(monFichier))
+    using (BinaryWriter ecriture = new BinaryWriter(monFichier))
+    {
+        int compteurFiche = 1;
+
+        while (monFichier.Position < monFichier.Length)
+        {
+            try
+            {
+                positionDebut = monFichier.Position;
+
+                // Lire les données de la fiche
+                int numero = lecture.ReadInt32();
+                string nom = lecture.ReadString();
+                string prenom = lecture.ReadString();
+                string telephone = lecture.ReadString();
+
+                // Vérifier si c'est la fiche souhaitée
+                if (compteurFiche == numFicheUtilisateur)
+                {
+                    ficheTrouvee = true;
+
+                    // Afficher les données pour confirmation
+                    Console.WriteLine("\nDonnées actuelles de la fiche :");
+                    Console.WriteLine($"Fiche numéro : {compteurFiche}");
+                    Console.WriteLine($"Numéro : {numero}");
+                    Console.WriteLine($"Nom : {nom}");
+                    Console.WriteLine($"Prénom : {prenom}");
+                    Console.WriteLine($"Téléphone : {telephone}");
+                    Console.WriteLine("-------------------");
+
+                    Console.Write("Confirmez-vous la suppression de ce client ? (o/n) : ");
+                    string confirmation = Console.ReadLine()?.ToLower();
+
+                    if (confirmation == "o" || confirmation == "oui")
+                    {
+                        // Ajouter un * devant le nom pour marquer comme supprimé
+                        string nouveauNom = "*" + nom;
+
+                        // Repositionner pour écrire
+                        monFichier.Seek(positionDebut + sizeof(int), SeekOrigin.Begin); // Sauter le numéro
+                        ecriture.Write(nouveauNom);
+                        Console.WriteLine("Le client a été supprimé logiquement avec succès.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Suppression annulée.");
+                    }
+
+                    break;
+                }
+
+                compteurFiche++;
+            }
+            catch (EndOfStreamException)
+            {
+                break;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Erreur lors de la lecture d'une fiche : " + ex.Message);
+                break;
+            }
+        }
+
+        if (!ficheTrouvee)
+        {
+            Console.WriteLine("Fiche non trouvée.");
+        }
+    }
+
+    Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+    Console.ReadKey(); // Pause avant de retourner au menu
+}
+
+
 
     //Menu utilisateur
     static bool Menu()
@@ -448,7 +547,7 @@ static void ModifierClient()
                 ModifierClient();
                 return true; // Continue le menu
             case "6":
-                Console.WriteLine("Vous avez choisi l'option 2.");
+                SupprimerClient();
                 return true; // Continue le menu
             case "7":
                 Console.WriteLine("Vous avez choisi l'option 2.");
