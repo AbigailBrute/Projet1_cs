@@ -535,37 +535,31 @@ static void RecupererFicheSupprimee()
     }
 
     Console.Write("Entrez le nom du client à récupérer : ");
-    string nomRecherche = Console.ReadLine(); 
+    string nomRecherche = Console.ReadLine();
     Majuscule(ref nomRecherche); // Convertir en majuscules pour éviter la casse
 
     bool ficheTrouvee = false;
-    long positionDebut;
 
-    List<Clients> clients = new List<Clients>(); // Liste pour stocker tous les clients, y compris supprimés
+    List<Clients> clients = new List<Clients>(); // Liste temporaire pour stocker toutes les fiches
 
-    using (FileStream monFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.ReadWrite))
+    using (FileStream monFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
     using (BinaryReader lecture = new BinaryReader(monFichier))
-    using (BinaryWriter ecriture = new BinaryWriter(monFichier))
     {
         while (monFichier.Position < monFichier.Length)
         {
             try
             {
-                // Sauvegarder la position actuelle pour modification si besoin
-                positionDebut = monFichier.Position;
-
-                // Lire les données de la fiche
+                // Lire les données du client
                 int numero = lecture.ReadInt32();
                 string nom = lecture.ReadString();
                 string prenom = lecture.ReadString();
                 string telephone = lecture.ReadString();
 
-                // Vérifier si le nom correspond (avec un * devant)
+                // Si le nom commence par "*" et correspond au nom recherché
                 if (nom.StartsWith("*") && nom.Substring(1) == nomRecherche)
                 {
                     ficheTrouvee = true;
 
-                    // Afficher les données pour confirmation
                     Console.WriteLine("Fiche trouvée :");
                     Console.WriteLine($"Numéro : {numero}");
                     Console.WriteLine($"Nom : {nom}");
@@ -575,32 +569,25 @@ static void RecupererFicheSupprimee()
 
                     Console.Write("Voulez-vous récupérer cette fiche ? (O/N) : ");
                     string confirmation = Console.ReadLine().ToUpper();
+
                     if (confirmation == "O")
                     {
-                        // Repositionner pour modifier le fichier
-                        monFichier.Seek(positionDebut, SeekOrigin.Begin);
-
-                        // Réécrire les données en retirant le '*'
-                        ecriture.Write(numero);
-                        ecriture.Write(nomRecherche); // Nom sans le '*', déjà en majuscules
-                        ecriture.Write(prenom);
-                        ecriture.Write(telephone);
-
+                        // Remettre le nom original (sans '*')
+                        nom = nomRecherche;
                         Console.WriteLine("La fiche a été récupérée avec succès.");
                     }
                     else
                     {
                         Console.WriteLine("Récupération annulée.");
                     }
-                    break; // Sortir de la boucle
                 }
 
-                // Ajouter toutes les autres fiches à la liste pour réécriture
+                // Ajouter la fiche (modifiée ou non) à la liste
                 clients.Add(new Clients(numero, nom, prenom, telephone));
             }
             catch (EndOfStreamException)
             {
-                break; // Fin du fichier atteinte
+                break;
             }
             catch (Exception ex)
             {
@@ -615,7 +602,7 @@ static void RecupererFicheSupprimee()
         Console.WriteLine("Aucune fiche correspondant au nom spécifié n'a été trouvée.");
     }
 
-    // Réécrire tout le fichier avec les clients mis à jour (incluant la récupération)
+    // Réécriture du fichier avec toutes les fiches mises à jour
     using (FileStream monFichier = new FileStream("Clients.bin", FileMode.Create, FileAccess.Write))
     using (BinaryWriter ecriture = new BinaryWriter(monFichier))
     {
