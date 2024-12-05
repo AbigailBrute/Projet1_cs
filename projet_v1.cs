@@ -618,6 +618,135 @@ static void RecupererFicheSupprimee()
     Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
     Console.ReadKey();
 }
+
+//Option 3 : Afficher tous les clients
+    static void AfficherSupprimer()
+    {
+        if (!File.Exists("Clients.bin"))
+        {
+            Console.WriteLine("Le fichier n'existe pas.");
+            return;
+        }
+        //Variables pour obtenir la numéro de la fiche client
+        int NumFiche, NbElements;
+        long Position;
+        //Variables pour lire les données clients
+        int Numero;
+        string Nom, Prenom, Telephone;
+
+        using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
+        using (BinaryReader Lecture = new BinaryReader(MonFichier))
+        {
+            Console.WriteLine("Liste des clients supprimés :");
+            Console.WriteLine("-------------------");
+
+            while (MonFichier.Position < MonFichier.Length)
+            {
+                try
+                {
+                    // Lire les champs d'un client et créer une instance de la structure Clients
+                    Clients UnClient = new Clients
+                    (
+                        Numero = Lecture.ReadInt32(),
+                        Nom = Lecture.ReadString(),
+                        Prenom = Lecture.ReadString(),
+                        Telephone = Lecture.ReadString()
+                    );
+
+                    // Obtenir la position actuelle dans le fichier pour calculer le numéro de la fiche
+                    Position = MonFichier.Position;
+                    NbElements = sizeof(int) + Nom.Length + Prenom.Length + Telephone.Length;
+                    NumFiche = (int)(Position / NbElements);
+
+                    // Vérifiez si la fiche est marquée comme supprimée
+                    if (UnClient.NomClient.StartsWith("*"))
+                    {
+                       Console.WriteLine("Fiche numéro : " + NumFiche);
+                        Console.WriteLine("Numéro : " + UnClient.NumClient);
+                        Console.WriteLine("Nom : " + UnClient.NomClient);
+                        Console.WriteLine("Prénom : " + UnClient.PrenomClient);
+                        Console.WriteLine("Téléphone : " + UnClient.TelClient);
+                        Console.WriteLine("-------------------");
+                    }
+                    else
+                    {
+                         continue; // Ignore les clients non supprimés
+                    }
+                }
+                catch (EndOfStreamException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Erreur lors de la lecture d'un client : " + ex.Message);
+                    break;
+                }
+            }
+        }
+
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey(); // Pause avant de retourner au menu
+    }
+    // 5. Suppression des fiches avec un '*' devant le nom
+    public static void SupprimerClientDefinitive()
+    {
+        if (!File.Exists("Clients.bin"))
+        {
+            Console.WriteLine("Le fichier n'existe pas.");
+            return;
+        }
+
+        using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.Read))
+        using (BinaryReader ReaderBin = new BinaryReader(MonFichier))
+        {
+            // Mettre en place le fichier temporaire et l’ouvrir en écriture
+            using (FileStream MonFichierTemp = new FileStream("Clients.bin" + ".temp", FileMode.Create, FileAccess.Write))
+            using (BinaryWriter WriterBinTemp = new BinaryWriter(MonFichierTemp))
+            {
+                while (MonFichier.Position < MonFichier.Length)
+                {
+                    try
+                    {
+                        // Lire les données d'une fiche
+                        int Numero = ReaderBin.ReadInt32();
+                        string Nom = ReaderBin.ReadString();
+                        string Prenom = ReaderBin.ReadString();
+                        string Telephone = ReaderBin.ReadString();
+
+                        // Si le nom ne commence pas par '*', conserver la fiche
+                        if (!Nom.StartsWith("*"))
+                        {
+                            WriterBinTemp.Write(Numero);
+                            WriterBinTemp.Write(Nom);
+                            WriterBinTemp.Write(Prenom);
+                            WriterBinTemp.Write(Telephone);
+                        }
+                    }
+                    catch (EndOfStreamException)
+                    {
+                        break; // Fin du fichier atteinte
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Erreur lors de la lecture : " + ex.Message);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Supprimer le fichier original
+        File.Delete("Clients.bin");
+
+        // Renommer le fichier temporaire avec le nom du fichier original
+        File.Move("Clients.bin" + ".temp", "Clients.bin");
+        Console.WriteLine("Fiches supprimées");
+
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey(); // Pause avant de retourner au menu
+
+    }
     //Menu utilisateur
     static bool Menu()
     {
@@ -659,10 +788,10 @@ static void RecupererFicheSupprimee()
                 RecupererFicheSupprimee();
                 return true; // Continue le menu
             case "8":
-                Console.WriteLine("Vous avez choisi l'option 2.");
+                AfficherSupprimer();
                 return true; // Continue le menu
             case "9":
-                Console.WriteLine("Vous avez choisi l'option 2.");
+                SupprimerClientDefinitive();
                 return true; // Continue le menu
             case "10":
                 Console.WriteLine("Au revoir !");
