@@ -76,24 +76,26 @@ class ProjetV1
         
 
         Console.WriteLine("Le client " + Nom + " " + Prenom + " a bien été ajouté.");
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey(); // Pause avant de retourner au menu
     }
     //Option 2 : Trouver un client avec son nom
     static void AfficherClient()
     {
+        if (!File.Exists("Clients.bin"))
+        {
+            Console.WriteLine("Le fichier n'existe pas. Commencez par ajouter un client.");
+            Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+            Console.ReadKey();
+            return;
+        }
         // Demander le nom du client
         Console.Write("Entrez le nom du client à rechercher : ");
         string RechClient = Console.ReadLine().ToUpper(); // Convertir en majuscule pour éviter les erreurs de comparaison
 
-        if (!File.Exists("Clients.bin"))
-        {
-            Console.WriteLine("Le fichier n'existe pas.");
-            return;
-        }
-
         bool ClientTrouve = false; // Indicateur pour savoir si un client a été trouvé
-        //Variables pour obtenir la numéro de la fiche client
-        int NumFiche, NbElements;
-        long Position;
+        //Variable pour obtenir le numéro de la fiche client
+        int NumFiche = 1;
         //Variables pour lire les données du fichier
         int Numero;
         string Nom, Prenom, Telephone;
@@ -120,10 +122,6 @@ class ProjetV1
                     // Vérifier si le nom correspond
                     if (UnClient.NomClient.ToUpper() == RechClient)
                     {
-                        //Calcul position fiche
-                        Position = MonFichier.Position;
-                        NbElements = sizeof(int) + Nom.Length + Prenom.Length + Telephone.Length;
-                        NumFiche = (int)(Position / NbElements);
                         // Afficher les informations du client
                         Console.WriteLine("Fiche numéro : " + NumFiche);
                         Console.WriteLine("Numéro : " + UnClient.NumClient);
@@ -133,6 +131,8 @@ class ProjetV1
                         Console.WriteLine("-------------------");
                         ClientTrouve = true;
                     }
+
+                    NumFiche++; // Incrémenter le numéro de fiche après chaque lecture
                 }
                 catch (Exception ex)
                 {
@@ -151,18 +151,18 @@ class ProjetV1
         Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
         Console.ReadKey(); // Pause avant de retourner au menu
     }
-
     //Option 3 : Afficher tous les clients
     static void AfficherTousClients()
     {
         if (!File.Exists("Clients.bin"))
         {
-            Console.WriteLine("Le fichier n'existe pas.");
+            Console.WriteLine("Le fichier n'existe pas. Commencez par ajouter un client.");
+            Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+            Console.ReadKey();
             return;
         }
-        //Variables pour obtenir la numéro de la fiche client
-        int NumFiche, NbElements;
-        long Position;
+        //Variable pour obtenir la numéro de la fiche client
+        int NumFiche = 1;
         //Variables pour lire les données clients
         int Numero;
         string Nom, Prenom, Telephone;
@@ -186,11 +186,6 @@ class ProjetV1
                         Telephone = Lecture.ReadString()
                     );
 
-                    // Obtenir la position actuelle dans le fichier pour calculer le numéro de la fiche
-                    Position = MonFichier.Position;
-                    NbElements = sizeof(int) + Nom.Length + Prenom.Length + Telephone.Length;
-                    NumFiche = (int)(Position / NbElements);
-
                     // Vérifiez si la fiche est marquée comme supprimée
                     if (UnClient.NomClient.StartsWith("*"))
                     {
@@ -202,6 +197,8 @@ class ProjetV1
                     Console.WriteLine("Prénom : " + UnClient.PrenomClient);
                     Console.WriteLine("Téléphone : " + UnClient.TelClient);
                     Console.WriteLine("-------------------");
+
+                    NumFiche++; // Incrémenter le numéro de fiche après chaque lecture
                 }
                 catch (EndOfStreamException)
                 {
@@ -218,17 +215,16 @@ class ProjetV1
         Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
         Console.ReadKey(); // Pause avant de retourner au menu
     }
-
-
     //Option 4 : Affichage du nombre de clients dans le fichier
     static void NombreClients()
     {
         if (!File.Exists("Clients.bin"))
         {
-            Console.WriteLine("Le fichier n'existe pas.");
+            Console.WriteLine("Le fichier n'existe pas. Commencez par ajouter un client.");
+            Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+            Console.ReadKey();
             return;
         }
-
         int Fiches = 0; // Compteur pour les fiches
 
         //Variables pour lire les données clients
@@ -281,137 +277,146 @@ class ProjetV1
         Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
         Console.ReadKey(); // Pause avant de retourner au menu
     }
-    
     //Option 5 : Modifier un client existant
-static void ModifierClient()
-{
-    if (!File.Exists("Clients.bin"))
+    static void ModifierClient()
     {
-        Console.WriteLine("Le fichier n'existe pas.");
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey();
-        return;
-    }
-
-    Console.Write("Entrez le numéro de la fiche à modifier : ");
-    if (!int.TryParse(Console.ReadLine(), out int numFicheUtilisateur))
-    {
-        Console.WriteLine("La valeur saisie n'est pas un numéro valide.");
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey();
-        return;
-    }
-
-    bool ficheTrouvee = false; // Indicateur de fiche trouvée
-    long positionDebut = 0;   // Position de début pour écriture
-    int compteurFiche = 1;    // Compteur commence à 1
-
-    using (FileStream monFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.ReadWrite))
-    using (BinaryReader lecture = new BinaryReader(monFichier))
-    using (BinaryWriter ecriture = new BinaryWriter(monFichier))
-    {
-        while (monFichier.Position < monFichier.Length)
+        if (!File.Exists("Clients.bin"))
         {
-            try
+            Console.WriteLine("Le fichier n'existe pas. Commencez par ajouter un client.");
+            Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+            Console.ReadKey();
+            return;
+        }
+
+        Console.Write("Entrez le numéro de la fiche à modifier : ");
+        if (!int.TryParse(Console.ReadLine(), out int NumFicheClient))
+        {
+            Console.WriteLine("La valeur saisie n'est pas un numéro valide.");
+            Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+            Console.ReadKey();
+            return;
+        }
+
+        bool FicheTrouvee = false; // Indicateur de fiche trouvée
+        long PositionDebut = 0;   // Position de début pour écriture
+        int CompteurFiche = 1;
+
+        //Variables pour la lecture des données
+        int NumeroClient;
+        string Nom, Prenom, Telephone;
+
+        using (FileStream MonFichier = new FileStream("Clients.bin", FileMode.Open, FileAccess.ReadWrite))
+        using (BinaryReader Lecture = new BinaryReader(MonFichier))
+        using (BinaryWriter Ecriture = new BinaryWriter(MonFichier))
+        {
+            while (MonFichier.Position < MonFichier.Length)
             {
-                positionDebut = monFichier.Position; // Sauvegarde de la position actuelle
-
-                // Lecture des données
-                int numero = lecture.ReadInt32();
-                string nom = lecture.ReadString();
-                string prenom = lecture.ReadString();
-                string telephone = lecture.ReadString();
-
-                // Ignore les fiches logiquement supprimées
-                if (nom.StartsWith("*")) continue;
-
-                if (compteurFiche == numFicheUtilisateur)
+                try
                 {
-                    ficheTrouvee = true;
+                    PositionDebut = MonFichier.Position; // Sauvegarde de la position actuelle
 
-                    // Affichage des données actuelles
-                    Console.WriteLine($"Fiche actuelle : {compteurFiche}");
-                    Console.WriteLine($"Numéro : {numero}");
-                    Console.WriteLine($"Nom : {nom}");
-                    Console.WriteLine($"Prénom : {prenom}");
-                    Console.WriteLine($"Téléphone : {telephone}");
-                    Console.WriteLine("-------------------");
+                    // Lecture des données
+                    NumeroClient = Lecture.ReadInt32();
+                    Nom = Lecture.ReadString();
+                    Prenom = Lecture.ReadString();
+                    Telephone = Lecture.ReadString();
 
-                    // Demande des nouvelles données
-                    Console.Write($"Nouveau nom ({nom}) : ");
-                    string nouveauNom = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(nouveauNom))
+                    // Ignore les fiches logiquement supprimées
+                    if (Nom.StartsWith("*"))
                     {
-                        nouveauNom = nom;
-                    }
-                    else
-                    {
-                        Majuscule(ref nouveauNom);
+                        continue; // Passer directement à la fiche suivante
                     }
 
-                    Console.Write($"Nouveau prénom ({prenom}) : ");
-                    string nouveauPrenom = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(nouveauPrenom))
+                    if (CompteurFiche == NumFicheClient)
                     {
-                        nouveauPrenom = prenom;
-                    }
-                    else
-                    {
-                        FirstMajuscule(ref nouveauPrenom);
-                    }
-                    Console.Write($"Nouveau téléphone ({telephone}) : ");
-                    string nouveauTelephone = Console.ReadLine();
-                    if (string.IsNullOrWhiteSpace(nouveauTelephone)) nouveauTelephone = telephone;
+                        FicheTrouvee = true;
 
-                    // Confirmation
-                    Console.WriteLine("\nRésumé des modifications proposées :");
-                    Console.WriteLine($"Nom : {nom} → {nouveauNom}");
-                    Console.WriteLine($"Prénom : {prenom} → {nouveauPrenom}");
-                    Console.WriteLine($"Téléphone : {telephone} → {nouveauTelephone}");
-                    Console.Write("Confirmez-vous les modifications ? (o/n) : ");
-                    string confirmation = Console.ReadLine()?.ToLower();
+                        // Affichage des données actuelles
+                        Console.WriteLine("Fiche actuelle : " + CompteurFiche);
+                        Console.WriteLine("Numéro : " + NumeroClient);
+                        Console.WriteLine("Nom : " + Nom);
+                        Console.WriteLine("Prénom : " + Prenom);
+                        Console.WriteLine("Téléphone : " + Telephone);
+                        Console.WriteLine("-------------------");
 
-                    if (confirmation == "o" || confirmation == "oui")
-                    {
-                        // Réécriture de la fiche
-                        monFichier.Seek(positionDebut, SeekOrigin.Begin);
-                        ecriture.Write(numero);        // Réécrire le numéro
-                        ecriture.Write(nouveauNom);   // Écrire le nouveau nom
-                        ecriture.Write(nouveauPrenom);// Écrire le nouveau prénom
-                        ecriture.Write(nouveauTelephone); // Écrire le nouveau téléphone
-                        Console.WriteLine("Données du client modifiées avec succès.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Modifications annulées.");
-                    }
+                        // Demande des nouvelles données
+                        Console.Write("Nouveau nom " + "(" + Nom + ") : ");
+                        string NouveauNom = Console.ReadLine();
+                        if (string.IsNullOrWhiteSpace(NouveauNom))
+                        {
+                            NouveauNom = Nom;
+                        }
+                        else
+                        {
+                            Majuscule(ref NouveauNom);
+                        }
 
-                    break; // On sort de la boucle, la fiche est traitée
+                        Console.Write("Nouveau prénom " + "(" + Prenom + ") : ");
+                        string NouveauPrenom = Console.ReadLine();
+                        if (string.IsNullOrWhiteSpace(NouveauPrenom))
+                        {
+                            NouveauPrenom = Prenom;
+                        }
+                        else
+                        {
+                            FirstMajuscule(ref NouveauPrenom);
+                        }
+
+                        Console.Write("Nouveau numéro de téléphone " + "(" + Telephone + ") : ");
+                        string NouveauTelephone = Console.ReadLine();
+                        if (string.IsNullOrWhiteSpace(NouveauTelephone))
+                        {
+                            NouveauTelephone = Telephone;
+                        }
+
+                        // Confirmation
+                        Console.WriteLine("\nRésumé des modifications proposées :");
+                        Console.WriteLine("Nom : " + Nom + " → " + NouveauNom);
+                        Console.WriteLine("Prénom : " + Prenom + " → " + NouveauPrenom);
+                        Console.WriteLine("Téléphone : " + Telephone + " → " + NouveauTelephone);
+                        Console.Write("Confirmez-vous les modifications ? (o/n) : ");
+                        string Confirmation = Console.ReadLine()?.ToLower();
+
+                        if (Confirmation == "o" || Confirmation == "oui")
+                        {
+                            // Réécriture de la fiche
+                            MonFichier.Seek(PositionDebut, SeekOrigin.Begin);
+                            Ecriture.Write(NumeroClient);
+                            Ecriture.Write(NouveauNom);
+                            Ecriture.Write(NouveauPrenom);
+                            Ecriture.Write(NouveauTelephone);
+                            Console.WriteLine("Données du client modifiées avec succès.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Modifications annulées.");
+                        }
+
+                        break;
+                    }
                 }
+                catch (EndOfStreamException)
+                {
+                    break;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Erreur lors de la lecture d'un client : " + ex.Message);
+                    break;
+                }
+            }
+            CompteurFiche++;
 
-                compteurFiche++; // Passage à la fiche suivante
-            }
-            catch (EndOfStreamException)
+            if (!FicheTrouvee)
             {
-                break;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Erreur lors de la lecture d'un client : " + ex.Message);
-                break;
+                Console.WriteLine("Fiche non trouvée.");
             }
         }
 
-        if (!ficheTrouvee)
-        {
-            Console.WriteLine("Fiche non trouvée.");
-        }
+        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+        Console.ReadKey();
     }
-
-    Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-    Console.ReadKey();
-}
-
+//Option 6 : Supprimer logiquement un client
 static void SupprimerClient()
 {
     if (!File.Exists("Clients.bin"))
