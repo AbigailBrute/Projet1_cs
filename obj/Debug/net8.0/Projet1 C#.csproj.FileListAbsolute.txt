@@ -12,18 +12,18 @@ C:\Users\abiga\OneDrive\Bureau\Projet1 C#\obj\Debug\net8.0\refint\Projet1 C#.dll
 C:\Users\abiga\OneDrive\Bureau\Projet1 C#\obj\Debug\net8.0\Projet1 C#.pdb
 C:\Users\abiga\OneDrive\Bureau\Projet1 C#\obj\Debug\net8.0\Projet1 C#.genruntimeconfig.cache
 C:\Users\abiga\OneDrive\Bureau\Projet1 C#\obj\Debug\net8.0\ref\Projet1 C#.dll
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\Projet1 C#.exe
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\Projet1 C#.deps.json
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\Projet1 C#.runtimeconfig.json
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\Projet1 C#.dll
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\Projet1 C#.pdb
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\projet_v1.exe
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\projet_v1.deps.json
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\projet_v1.runtimeconfig.json
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\projet_v1.dll
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\bin\Debug\net8.0\projet_v1.pdb
 C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\Projet1 C#.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\Projet1 C#.AssemblyInfoInputs.cache
 C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\Projet1 C#.AssemblyInfo.cs
 C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\Projet1 C#.csproj.CoreCompileInputs.cache
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\Projet1 C#.dll
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\refint\Projet1 C#.dll
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\Projet1 C#.pdb
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\Projet1 C#.genruntimeconfig.cache
-C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\ref\Projet1 C#.dll
 C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\Projet1 C#.sourcelink.json
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\projet_v1.dll
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\refint\projet_v1.dll
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\projet_v1.pdb
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\Projet1 C#.genruntimeconfig.cache
+C:\Users\abiga\OneDrive\Bureau\Projet1_cs\obj\Debug\net8.0\ref\projet_v1.dll
