@@ -747,6 +747,20 @@ static void RecupererFicheSupprimee()
         Console.ReadKey(); // Pause avant de retourner au menu
 
     }
+
+    static void Quitter()
+    {
+        Console.WriteLine("Merci d'avoir utilisé l'application. À bientôt !");
+        System.Threading.Thread.Sleep(1500); // Pause pour afficher le message (1,5 seconde)
+        Console.Clear(); // Nettoie le terminal
+    }
+
+    static void OptionInvalide()
+    {
+        Console.WriteLine("Option invalide. Saisissez une option valide : ");
+        Console.ReadKey();
+    }
+
     //Menu utilisateur
     static bool Menu()
     {
@@ -771,35 +785,34 @@ static void RecupererFicheSupprimee()
                 return true; // Continue le menu
             case "2":
                 AfficherClient();
-                return true; // Continue le menu
+                return true; 
             case "3":
                 AfficherTousClients();
-                return true; // Continue le menu
+                return true; 
             case "4":
                 NombreClients();
-                return true; // Continue le menu
+                return true; 
             case "5":
                 ModifierClient();
-                return true; // Continue le menu
+                return true; 
             case "6":
                 SupprimerClient();
-                return true; // Continue le menu
+                return true; 
             case "7":
                 RecupererFicheSupprimee();
-                return true; // Continue le menu
+                return true; 
             case "8":
                 AfficherSupprimer();
-                return true; // Continue le menu
+                return true; 
             case "9":
                 SupprimerClientDefinitive();
-                return true; // Continue le menu
+                return true; 
             case "10":
-                Console.WriteLine("Au revoir !");
+                Quitter();
                 return false; // Quitte le menu
             default:
-                Console.WriteLine("Option invalide. Saisissez une option valide : ");
-                Console.ReadKey();
-                return true; // Continue le menu
+                OptionInvalide();
+                return true; 
         }
     }
 
