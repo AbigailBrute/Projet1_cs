@@ -1,5 +1,7 @@
 using System;
 using System.IO;
+using System.Collections.Generic; 
+using System.Reflection;
 //Structure contenant les informations des clients, permettant d'en créer ou en modifier ou les utiliser.
     public struct Clients
     {
@@ -214,6 +216,7 @@ class ProjetV1
 
         Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
         Console.ReadKey(); // Pause avant de retourner au menu
+        Console.Clear();
     }
     //Option 4 : Affichage du nombre de clients dans le fichier
     public static void NombreClients()
@@ -764,7 +767,8 @@ class ProjetV1
     {
         Console.WriteLine("Merci d'avoir utilisé l'application. À bientôt !");
         System.Threading.Thread.Sleep(1500); // Pause pour afficher le message (1,5 seconde)
-        Console.Clear(); // Nettoie le terminal
+        Console.Clear();
+        Environment.Exit(0); // Quitte proprement le programme
     }
     //Option complémentaire : Statistique du fichier
     public static void Stats()
@@ -830,6 +834,7 @@ class ProjetV1
 
         Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
         Console.ReadKey(); // Pause avant de retourner au menu
+        Console.Clear();
     }
     // Option par défaut si l'utilisateur ne sélectionne pas une option du menu
     public static void OptionInvalide()
@@ -838,72 +843,79 @@ class ProjetV1
         Console.ReadKey();
     }
 
-    //Menu utilisateur
-    public static bool Menu()
-    {
-        //Console.Clear();
-        Console.WriteLine("1. Ajouter un nouveau client");
-        Console.WriteLine("2. Afficher un client");
-        Console.WriteLine("3. Afficher tous les clients");
-        Console.WriteLine("4. Afficher le nombre de clients");
-        Console.WriteLine("5. Modifier un client");
-        Console.WriteLine("6. Supprimer une fiche"); //Suppression logique donc ajout d'un * à la fiche (ligne dans le fichier)
-        Console.WriteLine("7. Récupérer une fiche supprimée"); //Retirer le * de ma fiche
-        Console.WriteLine("8. Afficher les fiches supprimées"); //Affichage des suppressions logiques
-        Console.WriteLine("9. Suppresion définitives des fiches"); //Suppression physique des fiches (effacer les lignes avec un *)
-        Console.WriteLine("10. Statistiques du fichier");
-        Console.WriteLine("11. Quitter");
-        Console.WriteLine("Choisissez une option :");
-
-        string Choix = Console.ReadLine();
-        switch (Choix)
+    public static void Main() 
+    { 
+        // Liste des noms de méthodes 
+        List<string> LesMethodes = new List<string> 
+        { 
+            "AjouterClient", 
+            "AfficherClient", 
+            "AfficherTousClients", 
+            "NombreClients", 
+            "ModifierClient", 
+            "SupprimerClient", 
+            "RecupererFicheSupprimee", 
+            "AfficherSupprimer", 
+            "SupprimerClientDefinitive", 
+            "Stats", 
+            "Quitter" 
+        }; 
+         
+        // Liste des descriptions des options
+        List<string> ItemsMenu = new List<string>
         {
-            case "1":
-                AjouterClient();
-                return true; // Continue le menu
-            case "2":
-                AfficherClient();
-                return true; 
-            case "3":
-                AfficherTousClients();
-                return true; 
-            case "4":
-                NombreClients();
-                return true; 
-            case "5":
-                ModifierClient();
-                return true; 
-            case "6":
-                SupprimerClient();
-                return true; 
-            case "7":
-                RecupererFicheSupprimee();
-                return true; 
-            case "8":
-                AfficherSupprimer();
-                return true; 
-            case "9":
-                SupprimerClientDefinitive();
-                return true;
-            case "10":
-                Stats();
-                return true;
-            case "11":
-                Quitter();
-                return false; // Quitte le menu
-            default:
-                OptionInvalide();
-                return true; 
-        }
-    }
-
-    public static void Main()
-    {
-        bool Continuer = true;
-
-        while (Continuer)
+            "Ajouter un client",
+            "Afficher un client",
+            "Afficher tous les clients",
+            "Afficher le nombre de clients",
+            "Modifier un client",
+            "Supprimer une fiche",
+            "Récupérer une fiche supprimée",
+            "Afficher les fiches supprimées",
+            "Suppression définitive des fiches",
+            "Statistiques du fichier",
+            "Quitter"
+        };
+        // Instance de la classe contenant les méthodes à déclencher 
+        ProjetV1 monprog = new ProjetV1(); 
+ 
+        while (true)
         {
-            Continuer = Menu();
+            // Afficher le menu
+            Console.Clear();
+            Console.WriteLine("Menu principal : ");
+            Console.WriteLine("--------------");
+            for (int i = 0; i < ItemsMenu.Count; i++)
+            {
+                Console.WriteLine((i + 1) + ". " + ItemsMenu[i]);
+            }
+
+            Console.WriteLine("\nEntrez le numéro de l'option souhaitée :");
+            string choix = Console.ReadLine();
+
+            if (int.TryParse(choix, out int Num) && Num >= 1 && Num <= LesMethodes.Count)
+            {
+                // Utilisation de reflection pour obtenir la méthode par son nom
+                MethodInfo methodInfo = monprog.GetType().GetMethod(LesMethodes[Num - 1]);
+
+                if (methodInfo != null)
+                {
+                    // Appeler la méthode sans paramètre
+                    methodInfo.Invoke(monprog, null);
+                    
+                }
+                else
+                {
+                    Console.WriteLine("Méthode introuvable.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("Option invalide. Réessayez.");
+            }
+
+            Console.WriteLine("\nAppuyez sur une touche pour revenir au menu...");
+            Console.ReadKey();
         }
-    }
+    } 
 }
