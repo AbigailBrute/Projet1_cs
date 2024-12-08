@@ -214,9 +214,9 @@ class ProjetV1
             }
         }
 
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
+       /* Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
         Console.ReadKey(); // Pause avant de retourner au menu
-        Console.Clear();
+        Console.Clear();*/
     }
     //Option 4 : Affichage du nombre de clients dans le fichier
     public static void NombreClients()
@@ -916,6 +916,7 @@ class ProjetV1
 
             Console.WriteLine("\nAppuyez sur une touche pour revenir au menu...");
             Console.ReadKey();
+            Console.Clear();
         }
     } 
 }
