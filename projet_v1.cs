@@ -715,7 +715,7 @@ class ProjetV1
                     }
                     catch (EndOfStreamException)
                     {
-                        break; // Fin du fichier atteinte
+                        break; 
                     }
                     catch (Exception ex)
                     {
