@@ -78,8 +78,6 @@ class ProjetV1
         
 
         Console.WriteLine("Le client " + Nom + " " + Prenom + " a bien été ajouté.");
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey(); // Pause avant de retourner au menu
     }
     //Option 2 : Trouver un client avec son nom
     public static void AfficherClient()
@@ -149,9 +147,6 @@ class ProjetV1
         {
             Console.WriteLine("Aucun client trouvé pour le nom spécifié.");
         }
-
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey(); // Pause avant de retourner au menu
     }
     //Option 3 : Afficher tous les clients
     public static void AfficherTousClients()
@@ -213,10 +208,6 @@ class ProjetV1
                 }
             }
         }
-
-       /* Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey(); // Pause avant de retourner au menu
-        Console.Clear();*/
     }
     //Option 4 : Affichage du nombre de clients dans le fichier
     public static void NombreClients()
@@ -275,10 +266,6 @@ class ProjetV1
 
         // Afficher le nombre de fiche et autres statistiques
         Console.WriteLine("Nombre de fiches existantes dans le fichier Clients : " + Fiches);
-        
-
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey(); // Pause avant de retourner au menu
     }
     //Option 5 : Modifier un client existant
     public static void ModifierClient()
@@ -419,9 +406,6 @@ class ProjetV1
         {
             Console.WriteLine("Modifications annulées.");
         }
-
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey();
     }
 
     //Option 6 : Supprimer logiquement un client
@@ -533,9 +517,6 @@ class ProjetV1
             Ecriture.Write(Client.TelClient);
         }
     }
-
-    Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-    Console.ReadKey(); // Pause avant de retourner au menu
 }
 
     //Option 7 : Récuperer un client supprimé
@@ -634,9 +615,6 @@ class ProjetV1
                 Ecriture.Write(Client.TelClient);
             }
         }
-
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey();
     }
 
     //Option 8 : Afficher client supprimées
@@ -697,9 +675,6 @@ class ProjetV1
                 }
             }
         }
-
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey(); // Pause avant de retourner au menu
     }
     // Option 9 : Suppression définitve des clients supprimées logiquement
     public static void SupprimerClientDefinitive()
@@ -757,17 +732,12 @@ class ProjetV1
         // Renommer le fichier temporaire avec le nom du fichier original
         File.Move("Clients.bin" + ".temp", "Clients.bin");
         Console.WriteLine("Fiches supprimées");
-
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey(); // Pause avant de retourner au menu
-
     }
     //Option 10 : Quitter le programme
     public static void Quitter()
     {
         Console.WriteLine("Merci d'avoir utilisé l'application. À bientôt !");
         System.Threading.Thread.Sleep(1500); // Pause pour afficher le message (1,5 seconde)
-        Console.Clear();
         Environment.Exit(0); // Quitte proprement le programme
     }
     //Option complémentaire : Statistique du fichier
@@ -831,16 +801,6 @@ class ProjetV1
         Console.WriteLine("Nombre total de fiches dans le fichier : " + TotalFiches);
         Console.WriteLine("Nombre de fiches supprimées logiquement : " + FichesSupprimees);
         Console.WriteLine("-------------------");
-
-        Console.WriteLine("Appuyez sur une touche pour revenir au menu...");
-        Console.ReadKey(); // Pause avant de retourner au menu
-        Console.Clear();
-    }
-    // Option par défaut si l'utilisateur ne sélectionne pas une option du menu
-    public static void OptionInvalide()
-    {
-        Console.WriteLine("Option invalide. Saisissez une option valide : ");
-        Console.ReadKey();
     }
 
     public static void Main() 
