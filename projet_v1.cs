@@ -369,9 +369,9 @@ class ProjetV1
         }
 
         Console.WriteLine("\nRésumé des modifications proposées :");
-        Console.WriteLine("Nom : " + Client.NomClient + " → " + NouveauNom);
-        Console.WriteLine("Prénom : " + Client.PrenomClient + " → " + NouveauPrenom);
-        Console.WriteLine("Téléphone : " + Client.TelClient + " → " + NouveauTelephone);
+        Console.WriteLine("Nom : " + Client.NomClient + " -> " + NouveauNom);
+        Console.WriteLine("Prénom : " + Client.PrenomClient + " -> " + NouveauPrenom);
+        Console.WriteLine("Téléphone : " + Client.TelClient + " -> " + NouveauTelephone);
         Console.Write("Confirmez-vous les modifications ? (o/n) : ");
         string Confirmation = Console.ReadLine()?.ToLower();
 
