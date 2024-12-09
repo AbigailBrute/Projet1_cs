@@ -25,19 +25,23 @@ Ce programme est une application console en C# qui permet de gérer les informat
 
 1. Clonez le dépôt :
    ```bash
-   git clone <https://github.com/AbigailBrute/Projet1_cs.git>
+   git clone https://github.com/AbigailBrute/Projet1_cs.git
 
 2. Accédez au répertoire du projet :
-- cd Projet1_cs
+   ```bash
+   cd Projet1_cs
 
 3. Compilez le projet en mode Debug :
-- dotnet build -c Debug
+   ```bash
+   dotnet build -c Debug
 
 4. Accédez au dossier contenant le fichier .exe :
-- cd bin\Debug\net8.0
+   ```bash
+   cd bin\Debug\net8.0
 
 5. Exécutez le programme :
-- projet_v1.exe
+   ```bash
+   projet_v1.exe
 
 ## Utilisation
 1. Lancez le programme en double-cliquant sur le fichier projet_v1.exe ou en utilisant la ligne de commande.
